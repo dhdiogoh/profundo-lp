@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profundo by Sushi Ruy Barbosa — É hora de mergulhar</title>
+<meta name="description" content="Profundo, uma experiência SRB além. Alta gastronomia entre água e fogo, no coração de Belém.">
+
+<!-- Fontes: Jost (display/body, substituta da Univia Pro Light) + Great Vibes (caligrafia da assinatura) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,200;0,300;0,400;0,500;1,300&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<!-- Stack de animação -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/lenis@1.3.23/dist/lenis.css">
+<script src="https://unpkg.com/lenis@1.3.23/dist/lenis.min.js"></script>
+<script src="https://unpkg.com/split-type"></script>
+<script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<style>
+/* ============================================================
+   PROFUNDO — Design Tokens (mapeiam 1:1 pro theme.extend do Tailwind)
+   ============================================================ */
+:root {
+  /* Paleta oceânica (ref. extraída do Convex Seascape Survey) */
+  --blue-1: #0E3453;   /* navy profundo */
+  --blue-2: #22628C;   /* azul médio */
+  --blue-3: #166995;   /* azul petróleo */
+  --blue-4: #0A5BA5;   /* azul vibrante — cor dos vetores */
+  --blue-5: #0098BC;   /* ciano-azulado — ACENTO */
+  --blue-6: #96E0F1;   /* ciano claro */
+  --blue-7: #1E3550;   /* navy escuro */
+  --blue-8: #B1F1FF;   /* quase branco-água */
+
+  --abyss: #071726;            /* derivado: fundo mais fundo (footer/hero base) */
+  --ember: #D98E4A;            /* acento quente — "fogo" (usado com extrema economia) */
+  --light: #F4F7F9;            /* fundo claro das seções com padrão */
+  --ink-on-light: #12293D;     /* texto sobre claro */
+
+  --accent: var(--blue-5);
+  --accent-30: rgba(0, 152, 188, 0.3);
+  --accent-12: rgba(0, 152, 188, 0.12);
+  --white-70: rgba(255,255,255,0.7);
+  --white-45: rgba(255,255,255,0.45);
+  --white-12: rgba(255,255,255,0.12);
+
+  /* Tipografia */
+  --font-display: 'Jost', sans-serif;
+  --font-script: 'Great Vibes', cursive;
+  --h1: clamp(2.6rem, 6.5vw, 6rem);
+  --h2: clamp(1.9rem, 4vw, 3.4rem);
+  --h3: clamp(1.15rem, 2vw, 1.5rem);
+  --body: clamp(1rem, 1.35vw, 1.125rem);
+  --label: clamp(0.7rem, 0.9vw, 0.78rem);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --radius: 20px;
+}
+
+/* ============================================================
+   Reset & base
+   ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: auto; }
+body {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: var(--body);
+  color: #fff;
+  background: var(--blue-1);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; }
+::selection { background: var(--accent); color: #fff; }
+
+/* Scrollbar customizado — substitui o nativo (desktop only; mobile mantém o de toque) */
+@media (min-width: 901px) {
+  html { scrollbar-width: none; }
+  html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; height: 0; }
+}
+.custom-scrollbar {
+  position: fixed; top: 92px; bottom: 26px; right: 10px;
+  width: 16px; z-index: 60;
+  display: flex; justify-content: center;
+  opacity: 0; transition: opacity 0.6s var(--ease) 0.2s;
+}
+.custom-scrollbar.visible { opacity: 1; }
+@media (max-width: 900px) { .custom-scrollbar { display: none; } }
+.custom-scrollbar-track {
+  position: relative; width: 3px; height: 100%;
+  background: rgba(150, 170, 185, 0.22);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: width 0.25s var(--ease);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, black 24px, black calc(100% - 24px), transparent 100%);
+}
+.custom-scrollbar:hover .custom-scrollbar-track,
+.custom-scrollbar.dragging .custom-scrollbar-track { width: 5px; }
+.custom-scrollbar-thumb {
+  position: absolute; left: 50%; top: 0;
+  width: 3px; min-height: 40px;
+  background: var(--accent);
+  border-radius: 999px;
+  transform: translateX(-50%);
+  cursor: grab;
+  transition: width 0.25s var(--ease);
+}
+.custom-scrollbar:hover .custom-scrollbar-thumb,
+.custom-scrollbar.dragging .custom-scrollbar-thumb { width: 5px; }
+.custom-scrollbar.dragging .custom-scrollbar-thumb { cursor: grabbing; }
+
+/* Cursor customizado (desktop) — anel no acento */
+#cursor {
+  position: fixed; top: 0; left: 0; width: 34px; height: 34px;
+  border: 1px solid var(--accent); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: normal;
+  transition: width 0.3s var(--ease), height 0.3s var(--ease), background-color 0.3s;
+}
+#cursor::after {
+  content: ""; position: absolute; top: 50%; left: 50%;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--accent); transform: translate(-50%, -50%);
+}
+@media (max-width: 900px), (hover: none) { #cursor { display: none; } }
+
+/* ============================================================
+   Tipos utilitários
+   ============================================================ */
+.section-label {
+  display: inline-flex; align-items: center; gap: 14px;
+  font-size: var(--label); font-weight: 400;
+  letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 26px;
+}
+.section-label::before {
+  content: ""; width: 34px; height: 1px; background: var(--accent);
+}
+h1, h2, h3 { font-weight: 200; line-height: 1.08; letter-spacing: 0.01em; }
+h2 { font-size: var(--h2); }
+h3 { font-size: var(--h3); font-weight: 300; }
+p  { line-height: 1.7; }
+.script { font-family: var(--font-script); font-weight: 400; }
+
+/* Botões */
+.btn {
+  position: relative; display: inline-flex; align-items: center; gap: 12px;
+  padding: 16px 36px; border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: transparent; color: #fff;
+  font-size: 0.82rem; font-weight: 400;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  overflow: hidden;
+  transition: color 0.4s var(--ease), border-color 0.4s var(--ease), background-color 0.4s var(--ease);
+}
+.btn::before {
+  content: ""; position: absolute; inset: 0;
+  background: var(--accent);
+  transform: translateY(101%);
+  transition: transform 0.45s var(--ease);
+  z-index: -1;
+}
+.btn:hover::before { transform: translateY(0); }
+.btn:hover { border-color: var(--accent); }
+.btn.on-light { color: var(--ink-on-light); }
+.btn.on-light:hover { color: #fff; }
+.btn .arrow { transition: transform 0.4s var(--ease); }
+.btn:hover .arrow { transform: translateX(5px); }
+
+/* Bolhas de hover (anime.js) */
+.bubble {
+  position: absolute; bottom: -6px;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--blue-8); opacity: 0;
+  pointer-events: none;
+}
+
+/* Seções — spacing base */
+.section { position: relative; padding: 120px 6vw; }
+@media (min-width: 1024px) { .section { padding: 160px 8vw; } }
+@media (max-width: 767px)  { .section { padding: 84px 6vw; } }
+
+/* Fundos claros com padrão de gravuras */
+.section--light { background: var(--light); color: var(--ink-on-light); }
+.section--light .section-label { color: var(--blue-4); }
+.section--light .section-label::before { background: var(--blue-4); }
+.bg-vec {
+  position: absolute; pointer-events: none; user-select: none;
+  opacity: 0.17; z-index: 0;
+}
+/* Variante branca — pra seções escuras (água e fogo, sobre) */
+.bg-vec--white {
+  filter: brightness(0) invert(1);
+  opacity: 0.15;
+}
+.section--light > *:not(.bg-vec) { position: relative; z-index: 1; }
+
+/* ============================================================
+   PRELOADER — a superfície antes do mergulho
+   ============================================================ */
+.preloader {
+  position: fixed; inset: 0; z-index: 500;
+  background: var(--light);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 34px;
+  will-change: transform;
+}
+.preloader.done { display: none; }
+.pre-jelly {
+  width: clamp(110px, 13vw, 190px);
+  animation: preJelly 3.2s ease-in-out infinite;
+  transform-origin: top center;
+}
+@keyframes preJelly {
+  0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  40% { transform: translateY(-14px) scale(1.04, 0.97) rotate(1.5deg); }
+  70% { transform: translateY(-4px) scale(0.98, 1.03) rotate(-1.5deg); }
+}
+.pre-label {
+  font-size: 0.66rem; letter-spacing: 0.4em; text-transform: uppercase;
+  color: rgba(18, 41, 61, 0.45);
+}
+.pre-bar {
+  width: 130px; height: 1px; overflow: hidden;
+  background: rgba(18, 41, 61, 0.1);
+  position: relative;
+}
+.pre-bar::after {
+  content: ""; position: absolute; top: 0; left: 0;
+  width: 40%; height: 100%;
+  background: var(--accent);
+  animation: preBar 1.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes preBar {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(360%); }
+}
+/* Onda na borda inferior — a curva que varre a tela no wipe de revelação */
+.pre-wave {
+  position: absolute; top: 100%; left: 0;
+  width: 100%; height: 120px;
+  display: block;
+}
+.pre-wave path { fill: var(--light); }
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 6vw;
+  transition: background-color 0.5s var(--ease), padding 0.5s var(--ease), backdrop-filter 0.5s;
+}
+.nav.scrolled {
+  background: rgba(7, 23, 38, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 14px 6vw;
+}
+.nav-logo img { height: 30px; width: auto; }
+.nav-links { display: flex; align-items: center; gap: 38px; }
+.nav-links a {
+  position: relative;
+  font-size: 0.78rem; font-weight: 400;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--white-70);
+  transition: color 0.3s;
+  padding: 4px 0;
+}
+.nav-links a::after {
+  content: ""; position: absolute; left: 0; bottom: 0;
+  width: 100%; height: 1px; background: var(--accent);
+  transform: scaleX(0); transform-origin: right;
+  transition: transform 0.45s var(--ease);
+}
+.nav-links a:hover { color: #fff; }
+.nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+.nav-cta {
+  padding: 10px 26px; border-radius: 999px;
+  border: 1px solid var(--accent); color: #fff;
+  font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+  transition: background-color 0.4s var(--ease);
+}
+.nav-cta:hover { background: var(--accent); }
+.nav-burger { display: none; }
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .nav-burger {
+    display: flex; flex-direction: column; gap: 6px;
+    background: none; border: none; padding: 8px;
+  }
+  .nav-burger span { width: 26px; height: 1px; background: #fff; transition: transform 0.4s var(--ease), opacity 0.3s; }
+  .nav.menu-open .nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav.menu-open .nav-burger span:nth-child(2) { opacity: 0; }
+  .nav.menu-open .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+}
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 85;
+  background: var(--abyss);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.5s var(--ease);
+}
+.mobile-menu.open { opacity: 1; pointer-events: all; }
+.mobile-menu a { font-size: 1.5rem; font-weight: 200; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white-70); }
+.mobile-menu a:active { color: var(--accent); }
+
+/* ============================================================
+   HERO — vídeo scroll-scrubado + pin da logo
+   ============================================================ */
+.hero { position: relative; height: 400vh; background: var(--abyss); }
+.hero-sticky {
+  position: sticky; top: 0; height: 100vh; height: 100svh;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.hero-video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; z-index: 0;
+}
+.hero-veil {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(7,23,38,0.55) 0%, rgba(7,23,38,0.15) 40%, rgba(7,23,38,0.65) 100%);
+  pointer-events: none;
+}
+#hero-particles { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.hero-content {
+  position: relative; z-index: 3;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: 0 6vw;
+}
+.hero-logo { width: min(58vw, 460px); will-change: transform, opacity; }
+.hero-logo img { width: 100%; height: auto; }
+.hero-slogan {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 900px);
+  text-align: center;
+  opacity: 0; visibility: hidden;
+}
+.hero-slogan h1 {
+  font-size: var(--h1);
+  font-weight: 200;
+  letter-spacing: 0.005em;
+}
+.hero-slogan .slogan-dive {
+  font-size: 1.22em;
+  color: var(--blue-6);
+  text-shadow: 0 0 34px rgba(150, 224, 241, 0.4);
+  padding-left: 0.05em;
+}
+.hero-slogan p {
+  margin-top: 22px;
+  font-size: clamp(0.95rem, 1.4vw, 1.15rem);
+  color: var(--white-70);
+  max-width: 46ch; margin-inline: auto;
+}
+.scroll-cue {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  z-index: 3;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  font-size: 0.66rem; letter-spacing: 0.34em; text-transform: uppercase;
+  color: var(--white-45);
+  opacity: 0;
+}
+.scroll-cue .line {
+  width: 1px; height: 44px;
+  background: linear-gradient(180deg, var(--accent), transparent);
+  animation: cueDrop 2.2s var(--ease) infinite;
+}
+@keyframes cueDrop {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ============================================================
+   SOBRE / MANIFESTO (escura) — ponto A da estrela
+   ============================================================ */
+#sobre { background: var(--blue-1); overflow: hidden; }
+.sobre-grid {
+  display: grid; grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(40px, 6vw, 90px); align-items: center;
+}
+@media (max-width: 900px) { .sobre-grid { grid-template-columns: 1fr; } }
+.sobre-media {
+  position: relative; border-radius: var(--radius); overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(135deg, var(--blue-7), var(--blue-2));
+}
+.sobre-media img { width: 100%; height: 100%; object-fit: cover; }
+.sobre-media::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(7,23,38,0.55));
+}
+#sobre p { color: var(--white-70); max-width: 54ch; }
+#sobre p + p { margin-top: 18px; }
+
+/* Estrela-do-mar — selo premium ao lado do título, protagonista da transição */
+.starfish-wrap {
+  position: fixed; top: 21vh; left: 30vw;
+  width: clamp(80px, 8.5vw, 130px);
+  aspect-ratio: 1 / 1;
+  z-index: 6; pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+}
+.starfish-inner { position: absolute; inset: 0; }
+.starfish-inner img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  filter: drop-shadow(0 14px 26px rgba(0,0,0,0.35)) brightness(1.55) saturate(0.85);
+}
+.starfish-inner img.star-white {
+  filter: brightness(0) invert(1);
+  opacity: 0;
+}
+@media (max-width: 900px) { .starfish-wrap { display: none; } }
+
+/* ============================================================
+   MOMENTO TIPOGRÁFICO (escura, pin) — água e fogo
+   ============================================================ */
+#manifesto { position: relative; height: 320vh; background: var(--blue-7); }
+.manifesto-sticky {
+  position: sticky; top: 0; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; padding: 0 6vw;
+}
+.manifesto-line {
+  font-size: clamp(2.4rem, 7vw, 6.4rem);
+  font-weight: 200; line-height: 1.15;
+  text-align: center;
+}
+.manifesto-line .mline { display: block; }
+.manifesto-line .w { display: inline-block; opacity: 0; will-change: opacity, transform; }
+.manifesto-line .agua, .manifesto-line .fogo {
+  font-family: var(--font-script);
+  font-size: 1.28em;
+  padding: 0 0.1em;
+}
+.manifesto-glow {
+  position: absolute; width: 420px; height: 420px; border-radius: 50%;
+  filter: blur(130px); opacity: 0.14; pointer-events: none;
+}
+.manifesto-glow.g1 { background: var(--blue-5); top: -10%; left: -6%; }
+.manifesto-glow.g2 { background: var(--ember); bottom: -14%; right: -6%; opacity: 0.08; }
+.ambient-bubbles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+
+/* ============================================================
+   ASSINATURA CULINÁRIA (clara + padrão)
+   ============================================================ */
+#cozinha .lead { max-width: 58ch; color: rgba(18,41,61,0.75); margin-top: 4px; }
+.culinaria-card {
+  position: relative;
+  margin-top: 64px;
+  background: var(--blue-1);
+  color: #fff;
+  border-radius: 28px;
+  border: 1px solid var(--accent-30);
+  padding: clamp(34px, 4.5vw, 64px);
+  display: grid; grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(30px, 4vw, 64px);
+  align-items: center;
+  overflow: visible;
+}
+@media (max-width: 900px) { .culinaria-card { grid-template-columns: 1fr; } }
+.culinaria-card h3 {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 200;
+}
+.culinaria-card p { color: var(--white-70); margin-top: 16px; max-width: 42ch; }
+.culinaria-card .btn { margin-top: 30px; }
+.card-crab {
+  position: absolute; top: -46px; right: -18px;
+  width: clamp(90px, 9vw, 140px);
+  transform: rotate(12deg);
+  filter: brightness(1.5) saturate(0.9);
+  opacity: 0.9; pointer-events: none;
+}
+@media (max-width: 900px) { .card-crab { top: -40px; right: -6px; width: 84px; } }
+
+/* Carrossel peek (ref. de interação Kuro Neko) */
+.carousel { position: relative; }
+.carousel-viewport { overflow: hidden; border-radius: 18px; }
+.carousel-track {
+  display: flex; gap: 14px;
+  transition: transform 0.65s var(--ease);
+  will-change: transform;
+}
+.carousel-slide {
+  flex: 0 0 78%;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px; overflow: hidden;
+  background: linear-gradient(135deg, var(--blue-7), var(--blue-3));
+  position: relative;
+}
+.carousel-slide img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s var(--ease); }
+.carousel-slide:hover img { transform: scale(1.05); }
+.carousel-slide .tag {
+  position: absolute; left: 14px; bottom: 14px;
+  font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase;
+  background: rgba(7,23,38,0.6); backdrop-filter: blur(8px);
+  padding: 7px 14px; border-radius: 999px; color: var(--white-70);
+}
+.carousel-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 20px;
+}
+.carousel-arrows { display: flex; gap: 10px; }
+.c-arrow {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1px solid var(--white-12); background: transparent; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+.c-arrow:hover { border-color: var(--accent); background: var(--accent-12); }
+.carousel-dots { display: flex; gap: 8px; }
+.carousel-dots span {
+  width: 7px; height: 7px; border-radius: 999px;
+  background: var(--white-12);
+  transition: width 0.4s var(--ease), background-color 0.4s;
+}
+.carousel-dots span.active { width: 22px; background: var(--accent); }
+
+/* ============================================================
+   MENUS (clara + padrão)
+   ============================================================ */
+#menus .menus-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 22px; margin-top: 56px;
+}
+@media (max-width: 820px) { #menus .menus-grid { grid-template-columns: 1fr; } }
+.menu-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid rgba(18,41,61,0.08);
+  border-radius: var(--radius);
+  padding: clamp(28px, 3vw, 42px);
+  overflow: hidden;
+  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease), border-color 0.4s;
+}
+.menu-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 26px 60px rgba(14, 52, 83, 0.12);
+  border-color: var(--accent-30);
+}
+.menu-card::after {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--accent);
+  transform: scaleY(0); transform-origin: top;
+  transition: transform 0.5s var(--ease);
+}
+.menu-card:hover::after { transform: scaleY(1); }
+.menu-tag {
+  display: inline-block;
+  font-size: 0.62rem; font-weight: 500;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--blue-4);
+  border: 1px solid rgba(10,91,165,0.25);
+  padding: 6px 14px; border-radius: 999px;
+  margin-bottom: 18px;
+}
+.menu-card h3 { font-size: clamp(1.35rem, 2.2vw, 1.8rem); font-weight: 300; color: var(--ink-on-light); }
+.menu-card .meta {
+  font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(18,41,61,0.45); margin: 10px 0 16px;
+}
+.menu-card p { color: rgba(18,41,61,0.72); font-size: 0.98rem; }
+#menus .cta-row { margin-top: clamp(70px, 10vw, 130px); display: flex; justify-content: center; }
+
+/* ============================================================
+   ATMOSFERA (escura)
+   ============================================================ */
+#atmosfera { background: var(--blue-1); overflow: hidden; }
+#atmosfera .lead { color: var(--white-70); max-width: 56ch; }
+.atm-grid {
+  display: grid; grid-template-columns: 1.25fr 1fr;
+  grid-template-rows: repeat(2, minmax(180px, 30vh));
+  gap: 18px; margin-top: 56px;
+}
+@media (max-width: 820px) {
+  .atm-grid { grid-template-columns: 1fr; grid-template-rows: repeat(3, 44vw); }
+}
+.atm-item { position: relative; border-radius: var(--radius); overflow: hidden; background: var(--blue-7); }
+.atm-item:first-child { grid-row: span 2; }
+@media (max-width: 820px) { .atm-item:first-child { grid-row: auto; } }
+.atm-item img { width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+.atm-item::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(7,23,38,0.5));
+}
+.atm-caption {
+  position: absolute; left: 18px; bottom: 16px; z-index: 2;
+  font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--white-70);
+}
+
+/* ============================================================
+   DIVISOR DE ONDA (anime.js) — transição escuro → claro
+   ============================================================ */
+.wave-divider {
+  position: relative;
+  background: var(--blue-1);
+  height: 130px; overflow: hidden;
+  line-height: 0;
+}
+.wave-divider svg { position: absolute; bottom: -1px; left: 0; width: 200%; height: 100%; }
+.wave-tentacle {
+  position: absolute; left: 7vw; bottom: 8px;
+  width: clamp(70px, 8vw, 120px);
+  transform-origin: bottom center;
+  filter: brightness(1.5) saturate(0.9);
+  opacity: 0.55; pointer-events: none; z-index: 2;
+}
+
+/* ============================================================
+   LOCALIZAÇÃO & RESERVA (clara + padrão)
+   ============================================================ */
+#local .local-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(40px, 6vw, 90px); align-items: center;
+}
+@media (max-width: 900px) { #local .local-grid { grid-template-columns: 1fr; } }
+.info-item { padding: 22px 0; border-bottom: 1px solid rgba(18,41,61,0.1); }
+.info-item:first-of-type { border-top: 1px solid rgba(18,41,61,0.1); margin-top: 26px; }
+.info-label {
+  font-size: 0.64rem; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--blue-4); margin-bottom: 6px;
+}
+.info-value { font-size: 1.02rem; color: var(--ink-on-light); }
+#local .btn { margin-top: 34px; }
+.local-media {
+  position: relative; border-radius: var(--radius); overflow: hidden;
+  aspect-ratio: 4 / 4.6;
+  background: linear-gradient(150deg, var(--blue-2), var(--blue-1));
+  display: flex; align-items: center; justify-content: center;
+}
+.local-media img { width: 100%; height: 100%; object-fit: cover; }
+.local-pin {
+  position: absolute; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  color: #fff; font-size: 0.7rem; letter-spacing: 0.24em; text-transform: uppercase;
+}
+.local-pin .dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 var(--accent-30);
+  animation: pinPulse 2.4s var(--ease) infinite;
+}
+@keyframes pinPulse {
+  0% { box-shadow: 0 0 0 0 rgba(0,152,188,0.45); }
+  70% { box-shadow: 0 0 0 22px rgba(0,152,188,0); }
+  100% { box-shadow: 0 0 0 0 rgba(0,152,188,0); }
+}
+
+/* ============================================================
+   FOOTER (escura) — wordmark + criaturas em loop
+   ============================================================ */
+footer {
+  position: relative;
+  background: var(--abyss);
+  padding: 110px 6vw 46px;
+  overflow: hidden;
+}
+.footer-creatures { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.creature {
+  position: absolute;
+  filter: brightness(1.7) saturate(0.75);
+  will-change: transform;
+}
+.creature.whale { width: clamp(140px, 16vw, 260px); top: 12%; opacity: 0.16; }
+.creature.fish-blue {
+  width: clamp(70px, 8vw, 120px); top: 45%;
+  filter: brightness(1.7) saturate(0.75) drop-shadow(0 0 4px rgba(150,224,241,0.25));
+  animation: fishBlink 2.8s ease-in-out infinite;
+}
+@keyframes fishBlink {
+  0%, 100% { opacity: 0.35; filter: brightness(1.6) saturate(0.7) drop-shadow(0 0 3px rgba(150,224,241,0.2)); }
+  50%      { opacity: 0.8;  filter: brightness(2.2) saturate(1) drop-shadow(0 0 18px rgba(150,224,241,0.9)); }
+}
+.creature.fish-white {
+  width: clamp(58px, 6.5vw, 100px);
+  opacity: 0.16;
+  filter: brightness(0) invert(1);
+}
+.creature.fish-white.top    { top: 18%; }
+.creature.fish-white.bottom { top: 68%; }
+.creature.jelly { width: clamp(60px, 7vw, 100px);  top: 22%; opacity: 0.18; }
+.footer-grid {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1.4fr 1fr 1fr;
+  gap: 40px;
+}
+@media (max-width: 820px) { .footer-grid { grid-template-columns: 1fr; } }
+.footer-brand img { height: 40px; width: auto; margin-bottom: 18px; }
+.footer-brand p { color: var(--white-45); font-size: 0.92rem; max-width: 32ch; }
+.foot-title {
+  font-size: 0.64rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--white-45); margin-bottom: 20px;
+}
+.foot-links { display: flex; flex-direction: column; gap: 12px; }
+.foot-links a { color: var(--white-70); font-size: 0.95rem; transition: color 0.3s, transform 0.3s; }
+.foot-links a:hover { color: var(--accent); transform: translateX(4px); }
+.footer-wordmark {
+  position: relative; z-index: 1;
+  margin-top: 90px;
+  font-size: clamp(3.4rem, 14.5vw, 15rem);
+  font-weight: 200;
+  letter-spacing: 0.08em;
+  line-height: 0.9;
+  text-align: center;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--accent-30);
+  user-select: none;
+}
+.footer-bottom {
+  position: relative; z-index: 1;
+  margin-top: 46px; padding-top: 24px;
+  border-top: 1px solid var(--white-12);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px;
+  font-size: 0.74rem; color: var(--white-45);
+  letter-spacing: 0.08em;
+}
+.footer-bottom a { color: var(--white-70); }
+.footer-bottom a:hover { color: var(--accent); }
+
+/* ============================================================
+   MODAL — Live Menu
+   ============================================================ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(7, 23, 38, 0.78);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 4vh 4vw;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s var(--ease);
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal-box {
+  width: min(520px, 100%); height: min(82vh, 780px);
+  background: #fff; border-radius: 22px; overflow: hidden;
+  display: flex; flex-direction: column;
+  transform: translateY(26px) scale(0.98);
+  transition: transform 0.45s var(--ease);
+}
+.modal-overlay.open .modal-box { transform: translateY(0) scale(1); }
+.modal-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(18,41,61,0.08);
+  color: rgba(18,41,61,0.6); font-size: 0.78rem; letter-spacing: 0.06em;
+}
+.modal-close {
+  background: none; border: none; font-size: 1.2rem;
+  color: rgba(18,41,61,0.5); padding: 6px;
+  transition: color 0.3s, transform 0.3s;
+}
+.modal-close:hover { color: var(--ink-on-light); transform: rotate(90deg); }
+.modal-box iframe { flex: 1; width: 100%; border: none; }
+/* Loading do cardápio embed — mesmo espírito do preloader, com cavalo-marinho */
+.modal-loading {
+  position: absolute; left: 0; right: 0; top: 52px; bottom: 48px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 26px; background: var(--light);
+  transition: opacity 0.5s var(--ease);
+  z-index: 2;
+}
+.modal-loading.hidden { opacity: 0; pointer-events: none; }
+.modal-jelly {
+  width: 78px;
+  animation: preJelly 3.2s ease-in-out infinite;
+  transform-origin: center;
+}
+.modal-foot {
+  padding: 12px 20px;
+  border-top: 1px solid rgba(18,41,61,0.08);
+  display: flex; justify-content: flex-end;
+}
+.modal-foot a {
+  font-size: 0.74rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--blue-4); display: inline-flex; align-items: center; gap: 8px;
+  transition: color 0.3s;
+}
+.modal-foot a:hover { color: var(--accent); }
+
+/* Acessibilidade — quem prefere sem animação */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<!-- ============ SCROLLBAR CUSTOMIZADO ============ -->
+<div class="custom-scrollbar" id="customScrollbar" aria-hidden="true">
+  <div class="custom-scrollbar-track" id="scrollTrack">
+    <div class="custom-scrollbar-thumb" id="scrollThumb"></div>
+  </div>
+</div>
+
+<!-- ============ PRELOADER — superfície ============ -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <img class="pre-jelly" src="PNGs illustrations/azuis/agua-viva-profundo-azul.png" alt="">
+  <div class="pre-bar"></div>
+  <span class="pre-label">Mergulhando</span>
+  <svg class="pre-wave" viewBox="0 0 1440 120" preserveAspectRatio="none">
+    <path d="M0,0 L1440,0 L1440,30 C1240,95 1040,10 840,55 C640,100 440,20 240,65 C140,88 60,60 0,75 Z"></path>
+  </svg>
+</div>
+
+<!-- ============ NAV ============ -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo" aria-label="Profundo">
+    <img src="Profundo-20260722T001832Z-1-001/Profundo/Profundo logo - white - new.png" alt="Profundo by Sushi Ruy Barbosa">
+  </a>
+  <div class="nav-links">
+    <a href="#sobre">Sobre</a>
+    <a href="#cozinha">Cozinha</a>
+    <a href="#menus">Menus</a>
+    <a href="#atmosfera">Ambiente</a>
+    <a href="#local" class="nav-cta">Reservar</a>
+  </div>
+  <button class="nav-burger" id="burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#sobre">Sobre</a>
+  <a href="#cozinha">Cozinha</a>
+  <a href="#menus">Menus</a>
+  <a href="#atmosfera">Ambiente</a>
+  <a href="#local">Reservar</a>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="hero-sticky">
+    <video class="hero-video" id="heroVideo" autoplay muted playsinline preload="auto" crossorigin="anonymous">
+      <source src="https://r7gebaatjirfgncj.public.blob.vercel-storage.com/Profundo/profundo-video-2.mp4" type="video/mp4">
+    </video>
+    <video class="hero-video" id="heroVideoB" muted playsinline preload="auto" crossorigin="anonymous" style="opacity: 0; will-change: opacity;">
+      <source src="https://r7gebaatjirfgncj.public.blob.vercel-storage.com/Profundo/profundo-video-2.mp4" type="video/mp4">
+    </video>
+    <div class="hero-veil"></div>
+    <canvas id="hero-particles"></canvas>
+
+    <div class="hero-content" id="heroContent">
+      <div class="hero-logo" id="heroLogo">
+        <img src="Profundo-20260722T001832Z-1-001/Profundo/Profundo logo - white - new.png" alt="Profundo">
+      </div>
+    </div>
+
+    <div class="hero-slogan" id="heroSlogan">
+      <h1>É hora de <span class="slogan-dive script">mergulhar.</span></h1>
+      <p>Uma marca assinada pelo Grupo SRB para paladares profundos e momentos memoráveis.</p>
+    </div>
+
+    <div class="scroll-cue" id="scrollCue">
+      <span>Desça</span>
+      <div class="line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SOBRE / MANIFESTO ============ -->
+<section class="section" id="sobre">
+  <div class="sobre-grid">
+    <div>
+      <span class="section-label">Manifesto</span>
+      <h2>15 anos criando tendências.</h2>
+      <p style="margin-top: 24px;">Estamos há 15 anos criando tendências, trazendo inovação e surpreendendo nossos clientes na sua experiência com nossa alta gastronomia.</p>
+      <p>Estamos diante de um novo conceito — mais exclusivo e aprimorado, assinado pelo Grupo SRB para paladares profundos e momentos memoráveis.</p>
+    </div>
+    <div class="sobre-media">
+      <img src="https://images.unsplash.com/photo-1643101570532-88c8ecc07c1f?w=1100&q=80&auto=format&fit=crop" alt="Ambiente do Profundo" loading="lazy">
+    </div>
+  </div>
+
+  <!-- Estrela-do-mar — selo do título, protagonista da transição pro Momento Tipográfico -->
+  <div class="starfish-wrap" id="starWrap" aria-hidden="true">
+    <div class="starfish-inner" id="starInner">
+      <img class="star-blue" id="starBlue" src="PNGs illustrations/azuis/estrela-do-mar-ilustracao-profundo-azul.png" alt="">
+      <img class="star-white" id="starWhite" src="PNGs illustrations/azuis/estrela-do-mar-ilustracao-profundo-azul.png" alt="">
+    </div>
+  </div>
+  <img class="bg-vec bg-vec--white" src="PNGs illustrations/azuis/baleia-profundo-azul.png" alt="" style="width: clamp(200px, 22vw, 380px); top: 6%; right: 3%; transform: rotate(-4deg);">
+</section>
+
+<!-- ============ MOMENTO TIPOGRÁFICO ============ -->
+<section id="manifesto">
+  <div class="manifesto-sticky">
+    <div class="manifesto-glow g1"></div>
+    <div class="manifesto-glow g2"></div>
+    <div class="ambient-bubbles" id="manifestoBubbles" aria-hidden="true"></div>
+    <img class="bg-vec bg-vec--white" id="manifestoJelly" src="PNGs illustrations/azuis/agua-viva-profundo-azul.png" alt="" style="width: clamp(140px, 15vw, 240px); top: 10%; left: 6%; transform: rotate(-8deg);">
+    <img class="bg-vec bg-vec--white" id="manifestoFish" src="PNGs illustrations/azuis/peixe-profundo-azul.png" alt="" style="width: clamp(150px, 16vw, 260px); bottom: 12%; right: 6%; transform: rotate(6deg) scaleX(-1);">
+    <img class="bg-vec bg-vec--white" id="manifestoSeahorse" src="PNGs illustrations/azuis/cavalo-marinho-profundo-azul.png" alt="" style="width: clamp(90px, 9vw, 150px); top: 16%; right: 14%; transform: rotate(10deg);">
+    <div class="manifesto-line" id="manifestoLine">
+      <span class="mline"><span class="w">Nasce</span> <span class="w">entre</span></span>
+      <span class="mline"><span class="w agua script">água</span> <span class="w">e</span> <span class="w fogo script">fogo.</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ASSINATURA CULINÁRIA ============ -->
+<section class="section section--light" id="cozinha">
+  <!-- Padrão de gravuras (espírito do uniforme do Profundo) -->
+  <img class="bg-vec" src="PNGs illustrations/azuis/polvo-profundo-azul.png" alt="" style="width: clamp(200px, 22vw, 340px); top: 3%; right: 2%; transform: rotate(14deg);">
+  <img class="bg-vec" src="PNGs illustrations/azuis/camarao-profundo-azul.png" alt="" style="width: clamp(130px, 14vw, 220px); bottom: 6%; left: 3%; transform: rotate(-10deg);">
+  <img class="bg-vec" src="PNGs illustrations/azuis/ostra-profundo-azul.png" alt="" style="width: clamp(110px, 12vw, 180px); top: 38%; left: 40%; transform: rotate(6deg);">
+  <img class="bg-vec" src="PNGs illustrations/azuis/estrela-do-mar-ilustracao-profundo-azul.png" alt="" style="width: clamp(90px, 10vw, 150px); top: 12%; left: 8%; transform: rotate(18deg);">
+
+  <span class="section-label">Assinatura Culinária</span>
+  <h2>Japão. Amazônia. Brasa.</h2>
+  <p class="lead" style="margin-top: 22px;">A união da técnica japonesa precisa com a robustez do fogo e a alma paraense — tucupi, jambu, castanha-do-pará e queijo do Marajó encontram o sushi e a grelha.</p>
+
+  <div class="culinaria-card">
+    <img class="card-crab" src="PNGs illustrations/azuis/siri-profundo-azul.png" alt="" aria-hidden="true">
+    <div>
+      <h3>Acesse nosso cardápio</h3>
+      <p>Explore criações autorais que unem a precisão japonesa, o fogo da brasa e ingredientes amazônicos.</p>
+      <button class="btn js-open-menu">Ver cardápio completo <span class="arrow">→</span></button>
+    </div>
+    <div class="carousel" id="carousel">
+      <div class="carousel-viewport">
+        <div class="carousel-track" id="carouselTrack">
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=1000&q=80&auto=format&fit=crop" alt="Prato do Profundo" loading="lazy">
+            <span class="tag">Foto placeholder</span>
+          </div>
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1619719304371-ba47186f4a8b?w=1000&q=80&auto=format&fit=crop" alt="Prato do Profundo" loading="lazy">
+            <span class="tag">Foto placeholder</span>
+          </div>
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1681270496598-13c5365730c8?w=1000&q=80&auto=format&fit=crop" alt="Prato do Profundo" loading="lazy">
+            <span class="tag">Foto placeholder</span>
+          </div>
+          <div class="carousel-slide">
+            <img src="https://images.unsplash.com/photo-1554502078-ef0fc409efce?w=1000&q=80&auto=format&fit=crop" alt="Prato do Profundo" loading="lazy">
+            <span class="tag">Foto placeholder</span>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-nav">
+        <div class="carousel-arrows">
+          <button class="c-arrow" id="cPrev" aria-label="Anterior">←</button>
+          <button class="c-arrow" id="cNext" aria-label="Próximo">→</button>
+        </div>
+        <div class="carousel-dots" id="cDots"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MENUS ============ -->
+<section class="section section--light" id="menus" style="padding-top: 60px; padding-bottom: 90px;">
+  <img class="bg-vec" src="PNGs illustrations/azuis/lagosta-profundo-azul.png" alt="" style="width: clamp(180px, 18vw, 300px); top: 4%; right: 3%; transform: rotate(-8deg);">
+  <img class="bg-vec" src="PNGs illustrations/azuis/lula-profundo-azul.png" alt="" style="width: clamp(150px, 16vw, 260px); bottom: 3%; left: 2%; transform: rotate(12deg);">
+  <img class="bg-vec" src="PNGs illustrations/azuis/siri-profundo-azul.png" alt="" style="width: clamp(110px, 12vw, 190px); top: 44%; left: 46%; transform: rotate(-6deg);">
+
+  <span class="section-label">Menus</span>
+  <h2>Escolha sua profundidade.</h2>
+
+  <div class="menus-grid">
+    <article class="menu-card">
+      <span class="menu-tag">Menu fechado · Almoço</span>
+      <h3>Executivo SRB</h3>
+      <div class="meta">Terça a sexta · 12h às 16h</div>
+      <p>Entrada e prato principal — ou principal e sobremesa — num menu ágil pro meio do dia, do pastel de moqueca ao roast beef de filé.</p>
+    </article>
+    <article class="menu-card">
+      <span class="menu-tag">Menu fechado · Early dinner</span>
+      <h3>Entre Marés</h3>
+      <div class="meta">Segunda a quinta · 18h às 21h</div>
+      <p>Entrada, principal e sobremesa em três tempos — uma curadoria pra explorar a casa antes do jantar cheio, do usuzukuri de salmão ao filhote na brasa.</p>
+    </article>
+    <article class="menu-card">
+      <span class="menu-tag">À la carte</span>
+      <h3>Menu Profundo</h3>
+      <div class="meta">Todos os dias</div>
+      <p>O cardápio principal da casa — Raw Bar, Usuzukuris, Hot Appetizers e pratos de Água, Fogo e Brasa.</p>
+    </article>
+    <article class="menu-card">
+      <span class="menu-tag">Counter · À la carte</span>
+      <h3>Sushi Bar</h3>
+      <div class="meta">Todos os dias</div>
+      <p>Sushis, sashimis e temakis no ritmo do balcão — dos clássicos aos assinados com queijo do Marajó, foie gras e tutano.</p>
+    </article>
+  </div>
+
+  <div class="cta-row">
+    <button class="btn on-light js-open-menu">Ver cardápio completo <span class="arrow">→</span></button>
+  </div>
+</section>
+
+<!-- ============ ATMOSFERA ============ -->
+<section class="section" id="atmosfera">
+  <img class="bg-vec bg-vec--white" src="PNGs illustrations/azuis/lula-profundo-azul.png" alt="" style="width: clamp(160px, 17vw, 280px); top: 5%; right: 4%; transform: rotate(-12deg);">
+  <span class="section-label">Atmosfera</span>
+  <h2>Cada canto, pensado para o encantamento.</h2>
+  <p class="lead" style="margin-top: 22px;">Iluminação baixa e pontual, mobiliário de design assinado, texturas que remetem ao ambiente marinho.</p>
+
+  <div class="atm-grid">
+    <div class="atm-item">
+      <img src="https://images.unsplash.com/photo-1725122194872-ace87e5a1a8d?w=1400&q=80&auto=format&fit=crop" alt="Salão do Profundo" loading="lazy">
+      <span class="atm-caption">Salão principal</span>
+    </div>
+    <div class="atm-item">
+      <img src="https://images.unsplash.com/photo-1625668751669-65ceebd81e34?w=1000&q=80&auto=format&fit=crop" alt="Detalhe do ambiente" loading="lazy">
+      <span class="atm-caption">Detalhe · mesa</span>
+    </div>
+    <div class="atm-item">
+      <img src="https://images.unsplash.com/photo-1651977560863-ca39bfa5176f?w=1000&q=80&auto=format&fit=crop" alt="Iluminação do ambiente" loading="lazy">
+      <span class="atm-caption">Detalhe · luz</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DIVISOR DE ONDA ============ -->
+<div class="wave-divider" aria-hidden="true">
+  <img class="wave-tentacle" id="waveTentacle" src="PNGs illustrations/azuis/calda-polvo-profundo-azul.png" alt="">
+  <svg id="waveSvg" viewBox="0 0 2400 130" preserveAspectRatio="none">
+    <path id="wavePath" fill="#F4F7F9" d="M0,70 C150,110 300,30 450,70 C600,110 750,30 900,70 C1050,110 1200,30 1350,70 C1500,110 1650,30 1800,70 C1950,110 2100,30 2250,70 C2325,90 2400,70 2400,70 L2400,130 L0,130 Z"></path>
+  </svg>
+</div>
+
+<!-- ============ LOCALIZAÇÃO & RESERVA ============ -->
+<section class="section section--light" id="local" style="padding-top: 100px;">
+  <img class="bg-vec" src="PNGs illustrations/azuis/cavalo-marinho-profundo-azul.png" alt="" style="width: clamp(130px, 14vw, 220px); top: 8%; right: 3%; transform: rotate(8deg);">
+  <img class="bg-vec" src="PNGs illustrations/azuis/estrela-do-mar-ilustracao-profundo-azul.png" alt="" style="width: clamp(100px, 11vw, 180px); bottom: 6%; left: 44%; transform: rotate(-14deg);">
+  <img class="bg-vec" src="PNGs illustrations/azuis/ostra-profundo-azul.png" alt="" style="width: clamp(110px, 12vw, 190px); top: 50%; left: 4%; transform: rotate(10deg);">
+
+  <div class="local-grid">
+    <div>
+      <span class="section-label">Localização &amp; Reserva</span>
+      <h2>Como chegar até aqui.</h2>
+      <div class="info-item">
+        <div class="info-label">Endereço</div>
+        <div class="info-value">Tv. Rui Barbosa, 1816 — Batista Campos, Belém-PA</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Estacionamento</div>
+        <div class="info-value">Exclusivo e gratuito, com manobrista</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Reservas</div>
+        <div class="info-value">WhatsApp (91) 98249-8434</div>
+      </div>
+      <a class="btn on-light" href="https://wa.me/5591982498434" target="_blank" rel="noopener">Reservar pelo WhatsApp <span class="arrow">→</span></a>
+    </div>
+    <div class="local-media">
+      <img src="https://images.unsplash.com/photo-1634714434666-ef41b76b9cc9?w=1100&q=80&auto=format&fit=crop" alt="Fachada do Profundo" loading="lazy">
+      <div class="local-pin"><span class="dot"></span><span>Batista Campos</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer id="footer">
+  <div class="footer-creatures" aria-hidden="true">
+    <img class="creature whale" id="crWhale" src="PNGs illustrations/azuis/baleia-profundo-azul.png" alt="">
+    <img class="creature fish-blue" id="crFishBlue" src="PNGs illustrations/azuis/peixe-profundo-azul.png" alt="">
+    <img class="creature fish-white top" id="crFishTop" src="PNGs illustrations/azuis/peixe-profundo-azul.png" alt="">
+    <img class="creature fish-white bottom" id="crFishBottom" src="PNGs illustrations/azuis/peixe-profundo-azul.png" alt="">
+    <img class="creature jelly" id="crJelly" src="PNGs illustrations/azuis/agua-viva-profundo-azul.png" alt="">
+  </div>
+
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="Profundo-20260722T001832Z-1-001/Profundo/Profundo logo - white - new.png" alt="Profundo by Sushi Ruy Barbosa">
+      <p>Uma experiência SRB além — para paladares profundos e momentos memoráveis.</p>
+    </div>
+    <div>
+      <div class="foot-title">Navegação</div>
+      <div class="foot-links">
+        <a href="#sobre">Sobre</a>
+        <a href="#cozinha">Cozinha</a>
+        <a href="#menus">Menus</a>
+        <a href="#atmosfera">Ambiente</a>
+        <a href="#local">Reservar</a>
+      </div>
+    </div>
+    <div>
+      <div class="foot-title">Conecte-se</div>
+      <div class="foot-links">
+        <a href="https://www.instagram.com/profundosrb/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://wa.me/5591982498434" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-wordmark">PROFUNDO</div>
+
+  <div class="footer-bottom">
+    <span>© 2026 Profundo · Grupo SRB. Todos os direitos reservados.</span>
+    <span>Site por <a href="#" rel="noopener">Bermax</a></span>
+  </div>
+</footer>
+
+<!-- ============ MODAL LIVE MENU ============ -->
+<div class="modal-overlay" id="menuModal" role="dialog" aria-modal="true" aria-label="Cardápio do Profundo">
+  <div class="modal-box">
+    <div class="modal-top">
+      <span>livemenu.app · Profundo</span>
+      <button class="modal-close" id="modalClose" aria-label="Fechar">✕</button>
+    </div>
+    <div class="modal-loading" id="modalLoading">
+      <img class="modal-jelly" src="PNGs illustrations/azuis/cavalo-marinho-profundo-azul.png" alt="">
+      <div class="pre-bar"></div>
+      <span class="pre-label">Mergulhando</span>
+    </div>
+    <iframe id="menuFrame" title="Cardápio Profundo" data-src="https://livemenu.app/menu/69b3280855af81d20db8cf3e?cross_session=done"></iframe>
+    <div class="modal-foot">
+      <a href="https://livemenu.app/menu/69b3280855af81d20db8cf3e?cross_session=done" target="_blank" rel="noopener">↗ Abrir em nova aba</a>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   PROFUNDO — Motor de animação
+   GSAP+ScrollTrigger+Lenis: tudo amarrado ao scroll (pin/scrub)
+   anime.js v4: intro, loops idle, micro-interações
+   Three.js: partículas + fog no hero
+   ============================================================ */
+const isMobile = window.matchMedia('(max-width: 900px)').matches || 'ontouchstart' in window;
+
+/* ---------- GSAP + Lenis ---------- */
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
+let lenis = null;
+if (typeof Lenis !== 'undefined' && !isMobile) {
+  try {
+    lenis = new Lenis({ duration: 1.25, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
+    if (typeof gsap !== 'undefined') {
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+      gsap.ticker.lagSmoothing(0);
+    }
+  } catch (e) {}
+}
+
+/* ---------- PRELOADER: superfície → mergulho ---------- */
+(function () {
+  const pre = document.getElementById('preloader');
+  if (!pre) return;
+  const MIN_TIME = 2000;   /* palco mínimo, mesmo com tudo em cache */
+  const MAX_WAIT = 6000;   /* conexão ruim: revela mesmo assim */
+  const vA = document.getElementById('heroVideo');
+
+  /* Trava o scroll enquanto a superfície segura o site */
+  document.body.style.overflow = 'hidden';
+  if (lenis) lenis.stop();
+  window.scrollTo(0, 0);
+
+  const minDelay = new Promise((r) => setTimeout(r, MIN_TIME));
+  const videoReady = new Promise((r) => {
+    if (!vA) return r();
+    if (vA.readyState >= 4) return r();      /* HAVE_ENOUGH_DATA: toca sem travar */
+    const done = () => r();
+    vA.addEventListener('canplaythrough', done, { once: true });
+    vA.addEventListener('error', done, { once: true });
+    vA.play().catch(() => {});                /* dá o start pra encher o buffer */
+  });
+  const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  const maxWait = new Promise((r) => setTimeout(r, MAX_WAIT));
+
+  Promise.all([minDelay, Promise.race([Promise.all([videoReady, fontsReady]), maxWait])]).then(reveal);
+
+  let revealed = false;
+  function reveal() {
+    if (revealed) return;
+    revealed = true;
+    document.body.style.overflow = '';
+    if (lenis) lenis.start();
+    if (vA) vA.play().catch(() => {});   /* garante reprodução ativa antes do wipe */
+
+    const finish = () => {
+      pre.classList.add('done');
+      document.dispatchEvent(new CustomEvent('profundo:reveal'));
+      if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+    };
+
+    if (typeof gsap !== 'undefined') {
+      gsap.timeline({ onComplete: finish })
+        .to('.pre-jelly', { y: -46, opacity: 0, duration: 0.55, ease: 'power2.in' }, 0)
+        .to('.pre-bar, .pre-label', { opacity: 0, duration: 0.35 }, 0)
+        .to(pre, { yPercent: -112, duration: 1.35, ease: 'power4.inOut' }, 0.25);
+    } else {
+      pre.style.transition = 'transform 1.2s cubic-bezier(0.76, 0, 0.24, 1)';
+      pre.style.transform = 'translateY(-112%)';
+      setTimeout(finish, 1250);
+    }
+  }
+})();
+
+/* ---------- Scrollbar customizado (desktop) ---------- */
+(function () {
+  if (isMobile) return;
+  const bar = document.getElementById('customScrollbar');
+  const track = document.getElementById('scrollTrack');
+  const thumb = document.getElementById('scrollThumb');
+  if (!bar || !track || !thumb) return;
+
+  function currentProgress() {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    return max > 0 ? doc.scrollTop / max : 0;
+  }
+
+  function updateThumb(progress) {
+    const trackH = track.clientHeight;
+    const doc = document.documentElement;
+    const ratio = doc.clientHeight / doc.scrollHeight;
+    const thumbH = Math.max(40, trackH * ratio);
+    thumb.style.height = thumbH + 'px';
+    const maxTravel = trackH - thumbH;
+    thumb.style.top = (progress * maxTravel) + 'px';
+  }
+
+  if (lenis) {
+    lenis.on('scroll', (e) => updateThumb(e.progress));
+  } else {
+    window.addEventListener('scroll', () => updateThumb(currentProgress()), { passive: true });
+  }
+  window.addEventListener('resize', () => updateThumb(currentProgress()));
+  document.addEventListener('profundo:reveal', () => {
+    bar.classList.add('visible');
+    updateThumb(currentProgress());
+  }, { once: true });
+  /* Segurança: se não houver preloader, revela direto */
+  if (!document.getElementById('preloader')) {
+    bar.classList.add('visible');
+    requestAnimationFrame(() => updateThumb(currentProgress()));
+  }
+
+  /* Arrastar a thumb ou clicar na trilha */
+  let dragging = false;
+  function scrollToClientY(clientY) {
+    const rect = track.getBoundingClientRect();
+    const thumbH = thumb.offsetHeight;
+    const maxTravel = rect.height - thumbH;
+    let rel = maxTravel > 0 ? (clientY - rect.top - thumbH / 2) / maxTravel : 0;
+    rel = Math.min(1, Math.max(0, rel));
+    const doc = document.documentElement;
+    const targetY = rel * (doc.scrollHeight - doc.clientHeight);
+    if (lenis) lenis.scrollTo(targetY, { immediate: true });
+    else window.scrollTo(0, targetY);
+  }
+  thumb.addEventListener('mousedown', (e) => {
+    dragging = true;
+    bar.classList.add('dragging');
+    e.preventDefault();
+  });
+  track.addEventListener('mousedown', (e) => {
+    if (e.target === thumb) return;
+    scrollToClientY(e.clientY);
+  });
+  window.addEventListener('mousemove', (e) => { if (dragging) scrollToClientY(e.clientY); });
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    bar.classList.remove('dragging');
+  });
+})();
+
+/* ---------- Cursor customizado ---------- */
+(function () {
+  const cursor = document.getElementById('cursor');
+  if (!cursor || isMobile || typeof gsap === 'undefined') return;
+  let mx = -100, my = -100;
+  document.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; });
+  gsap.ticker.add(() => {
+    gsap.set(cursor, { x: mx, y: my });
+  });
+  document.querySelectorAll('a, button, .carousel-slide, .custom-scrollbar-thumb, .custom-scrollbar-track').forEach((el) => {
+    el.addEventListener('mouseenter', () => gsap.to(cursor, { width: 54, height: 54, duration: 0.3 }));
+    el.addEventListener('mouseleave', () => gsap.to(cursor, { width: 34, height: 34, duration: 0.3 }));
+  });
+})();
+
+/* ---------- NAV ---------- */
+(function () {
+  const nav = document.getElementById('nav');
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobileMenu');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 40);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  if (burger && menu) {
+    burger.addEventListener('click', () => {
+      nav.classList.toggle('menu-open');
+      menu.classList.toggle('open');
+    });
+    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
+      nav.classList.remove('menu-open');
+      menu.classList.remove('open');
+    }));
+  }
+  /* Anchor suave via Lenis */
+  document.querySelectorAll('a[href^="#"]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      const id = a.getAttribute('href');
+      if (id.length > 1) {
+        const target = document.querySelector(id);
+        if (target) {
+          e.preventDefault();
+          if (lenis) lenis.scrollTo(target, { offset: 0 });
+          else target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  });
+})();
+
+/* ---------- HERO: loop seamless (crossfade entre 2 players do mesmo vídeo) ---------- */
+(function () {
+  const vA = document.getElementById('heroVideo');
+  const vB = document.getElementById('heroVideoB');
+  if (!vA || !vB) return;
+  const FADE = 1.2; /* segundos de sobreposição no fim → início */
+  let fading = false;
+
+  vA.play().catch(() => {});
+
+  function fade(el, to, done) {
+    if (typeof gsap !== 'undefined') {
+      gsap.to(el, { opacity: to, duration: FADE, ease: 'none', onComplete: done });
+    } else {
+      el.style.transition = 'opacity ' + FADE + 's linear';
+      el.style.opacity = to;
+      setTimeout(done, FADE * 1000);
+    }
+  }
+
+  /* vB está DEPOIS no DOM → pinta por cima. Ciclo:
+     A→B: B entra do zero e faz fade-in por cima de A.
+     B→A: A recomeça por baixo (invisível sob B opaco) e B faz fade-out, revelando A. */
+  let current = vA;
+  function onTime() {
+    const v = current;
+    if (fading || !v.duration) return;
+    if (v.duration - v.currentTime <= FADE) {
+      fading = true;
+      const other = v === vA ? vB : vA;
+      other.currentTime = 0;
+      other.play().catch(() => {});
+      if (other === vB) {
+        fade(vB, 1, () => { vA.pause(); current = vB; fading = false; });
+      } else {
+        fade(vB, 0, () => { vB.pause(); current = vA; fading = false; });
+      }
+    }
+  }
+  vA.addEventListener('timeupdate', onTime);
+  vB.addEventListener('timeupdate', onTime);
+})();
+
+/* ---------- HERO: pin da logo (coreografia no scroll) ---------- */
+(function () {
+  const logo = document.getElementById('heroLogo');
+  const slogan = document.getElementById('heroSlogan');
+  const cue = document.getElementById('scrollCue');
+
+  if (isMobile) {
+    document.getElementById('hero').style.height = '100svh';
+    if (slogan) { slogan.style.opacity = 1; slogan.style.visibility = 'visible'; slogan.style.top = '68%'; }
+    if (logo) logo.style.transform = 'translateY(-14vh) scale(0.85)';
+    return;
+  }
+
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+  const heroTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#hero',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.8
+    }
+  });
+
+  /* Coreografia: logo cresce e some → slogan emerge → respiro final */
+  heroTl
+    .to(logo, { scale: 1.55, ease: 'none', duration: 0.45 }, 0)
+    .to(logo, { opacity: 0, filter: 'blur(6px)', ease: 'power1.in', duration: 0.15 }, 0.3)
+    .to(cue, { opacity: 0, duration: 0.08 }, 0.05)
+    .set(slogan, { visibility: 'visible' }, 0.42)
+    .fromTo(slogan, { opacity: 0, y: 46 }, { opacity: 1, y: 0, ease: 'power2.out', duration: 0.22 }, 0.46)
+    .to(slogan, { y: -20, ease: 'none', duration: 0.32 }, 0.68);
+})();
+
+/* ---------- HERO: partículas Three.js (leve, só desktop) ---------- */
+(function () {
+  if (isMobile || typeof THREE === 'undefined') return;
+  const canvas = document.getElementById('hero-particles');
+  if (!canvas) return;
+  try {
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x071726, 0.06);
+    const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+    camera.position.z = 12;
+
+    const COUNT = 140;
+    const positions = new Float32Array(COUNT * 3);
+    const speeds = new Float32Array(COUNT);
+    for (let i = 0; i < COUNT; i++) {
+      positions[i * 3]     = (Math.random() - 0.5) * 30;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 16;
+      speeds[i] = 0.004 + Math.random() * 0.012;
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const mat = new THREE.PointsMaterial({
+      color: 0x96E0F1, size: 0.07, transparent: true, opacity: 0.6,
+      depthWrite: false, blending: THREE.AdditiveBlending
+    });
+    const points = new THREE.Points(geo, mat);
+    scene.add(points);
+
+    const resize = () => {
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const clock = new THREE.Clock();
+    (function loop() {
+      requestAnimationFrame(loop);
+      const t = clock.getElapsedTime();
+      const pos = geo.attributes.position.array;
+      for (let i = 0; i < COUNT; i++) {
+        pos[i * 3 + 1] += speeds[i];                       /* partícula sobe (plâncton) */
+        pos[i * 3] += Math.sin(t * 0.4 + i) * 0.0015;       /* deriva lateral sutil */
+        if (pos[i * 3 + 1] > 10) pos[i * 3 + 1] = -10;
+      }
+      geo.attributes.position.needsUpdate = true;
+      points.rotation.y = Math.sin(t * 0.05) * 0.05;
+      renderer.render(scene, camera);
+    })();
+  } catch (e) {}
+})();
+
+/* ---------- Intro do hero (anime.js — dispara após a revelação do preloader) ---------- */
+(function () {
+  const cue = document.getElementById('scrollCue');
+  const logo = document.getElementById('heroLogo');
+  if (logo) logo.style.opacity = '0';
+
+  function runIntro() {
+    if (typeof anime === 'undefined') {
+      if (logo) logo.style.opacity = '1';
+      if (cue) cue.style.opacity = '1';
+      return;
+    }
+    try {
+      const { animate } = anime;
+      animate('#heroLogo', {
+        opacity: [0, 1],
+        translateY: [26, 0],
+        filter: ['blur(10px)', 'blur(0px)'],
+        duration: 1600,
+        easing: 'cubicBezier(0.22, 1, 0.36, 1)'
+      });
+      animate('#scrollCue', {
+        opacity: [0, 1],
+        duration: 900,
+        delay: 1200,
+        easing: 'linear'
+      });
+    } catch (e) {
+      if (logo) logo.style.opacity = '1';
+      if (cue) cue.style.opacity = '1';
+    }
+  }
+  document.addEventListener('profundo:reveal', runIntro, { once: true });
+  /* Segurança: se o preloader não existir por algum motivo, roda no load */
+  if (!document.getElementById('preloader')) runIntro();
+})();
+
+/* ---------- Estrela-do-mar: selo do título → centro → contorno pulsante → profundidade ---------- */
+(function () {
+  if (isMobile || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  const wrap = document.getElementById('starWrap');
+  const blue = document.getElementById('starBlue');
+  const white = document.getElementById('starWhite');
+  if (!wrap || !blue) return;
+
+  /* Glow de CONTORNO — drop-shadow segue a silhueta do PNG, não um círculo */
+  const FILTER_BASE   = 'drop-shadow(0 14px 26px rgba(0,0,0,0.35)) brightness(1.55) saturate(0.85)';
+  const FILTER_GLOW_HI = 'drop-shadow(0 0 22px rgba(150,224,241,0.95)) brightness(1.85) saturate(0.9)';
+  const FILTER_GLOW_LO = 'drop-shadow(0 0 10px rgba(150,224,241,0.5)) brightness(1.65) saturate(0.88)';
+
+  /* Aparece como selo ao lado do título quando o Sobre entra em cena */
+  ScrollTrigger.create({
+    trigger: '#sobre',
+    start: 'top 55%',
+    end: 'bottom top',
+    onEnter: () => gsap.to(wrap, { opacity: 0.95, duration: 1, ease: 'power2.out' }),
+    onLeaveBack: () => gsap.to(wrap, { opacity: 0, duration: 0.5 })
+  });
+
+  /* Alvos em viewport, relativos à origem fixa do wrap */
+  const toCenterX = () => window.innerWidth * 0.5 - wrap.offsetLeft - wrap.offsetWidth * 0.5;
+  const toCenterY = () => window.innerHeight * 0.5 - wrap.offsetTop - wrap.offsetHeight * 0.5;
+  /* Destino final: canto inferior esquerdo, abaixo da água-viva */
+  const toRestX = () => toCenterX() - window.innerWidth * 0.34;
+  const toRestY = () => toCenterY() + window.innerHeight * 0.20;
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#sobre',
+      start: 'bottom 85%',
+      endTrigger: '#manifesto',
+      end: 'bottom bottom',
+      scrub: 1,
+      invalidateOnRefresh: true
+    }
+  });
+
+  tl
+    /* Fase 1 — do lado do título desce girando lento até o centro (chega em tamanho natural) */
+    .to(wrap, { x: toCenterX, y: toCenterY, rotation: 148, scale: 1.05, ease: 'power1.inOut', duration: 0.34 }, 0)
+    /* Fase 2 — SÓ AGORA o zoom com o contorno pulsando enquanto gira */
+    .to(wrap, { scale: 2.1, rotation: 220, ease: 'sine.inOut', duration: 0.18 }, 0.34)
+    .to(blue, { filter: FILTER_GLOW_HI, ease: 'sine.out', duration: 0.05 }, 0.36)
+    .to(blue, { filter: FILTER_GLOW_LO, ease: 'sine.inOut', duration: 0.05 }, 0.41)
+    .to(blue, { filter: FILTER_GLOW_HI, ease: 'sine.inOut', duration: 0.05 }, 0.46)
+    .to(blue, { filter: FILTER_BASE, ease: 'sine.in', duration: 0.06 }, 0.51)
+    /* Fase 3 — vira profundidade: azul cede pra branca translúcida e desce pra esquerda */
+    .to(blue, { opacity: 0, ease: 'none', duration: 0.14 }, 0.55)
+    .to(white, { opacity: 0.5, ease: 'none', duration: 0.14 }, 0.55)
+    .to(wrap, { x: toRestX, y: toRestY, rotation: 250, scale: 0.95, ease: 'power1.inOut', duration: 0.30 }, 0.56)
+    .to(white, { opacity: 0.16, ease: 'none', duration: 0.18 }, 0.70)
+    /* Descansa como parte do fundo; recolhe só no fim do pin */
+    .to(wrap, { opacity: 0, ease: 'power1.in', duration: 0.08 }, 0.94);
+})();
+
+/* ---------- Momento Tipográfico: palavras no scrub ---------- */
+(function () {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  const words = document.querySelectorAll('#manifestoLine .w');
+  if (!words.length) return;
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: '#manifesto',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.8
+    }
+  });
+  /* O texto nasce no MESMO instante em que a estrela inicia a saída — emerge de trás dela */
+  tl.fromTo('#manifestoLine', { scale: 0.9 }, { scale: 1, ease: 'power2.out', duration: 0.34 }, 0.36);
+  words.forEach((w, i) => {
+    tl.fromTo(w, { opacity: 0, y: 16, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: 'power2.out' }, 0.38 + i * 0.06);
+  });
+  /* "água" e "fogo" ganham cor quando entram em foco */
+  tl.to('.manifesto-line .agua', { color: 'var(--blue-6)', textShadow: '0 0 40px rgba(150,224,241,0.35)', duration: 0.10 }, 0.60)
+    .to('.manifesto-line .fogo', { color: 'var(--ember)', textShadow: '0 0 40px rgba(217,142,74,0.3)', duration: 0.10 }, 0.76)
+    .to({}, { duration: 0.14 }); /* respiro final antes de despinar */
+})();
+
+/* ---------- Reveal staggered (todas as seções) ---------- */
+(function () {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  gsap.utils.toArray('.section').forEach((section) => {
+    const items = section.querySelectorAll('.section-label, h2, .lead, p, .menu-card, .culinaria-card, .atm-item, .info-item, .btn, .local-media, .sobre-media');
+    if (!items.length) return;
+    gsap.from(items, {
+      opacity: 0, y: 44, duration: 0.9, stagger: 0.09,
+      ease: 'power3.out',
+      scrollTrigger: { trigger: section, start: 'top 78%' }
+    });
+  });
+})();
+
+/* ---------- Parallax sutil na Atmosfera (desktop) ---------- */
+(function () {
+  if (isMobile || typeof gsap === 'undefined') return;
+  gsap.utils.toArray('.atm-item img').forEach((img) => {
+    gsap.fromTo(img, { yPercent: -8 }, {
+      yPercent: 8, ease: 'none',
+      scrollTrigger: { trigger: img.closest('.atm-item'), start: 'top bottom', end: 'bottom top', scrub: true }
+    });
+  });
+})();
+
+/* ---------- Carrossel (Culinária) ---------- */
+(function () {
+  const track = document.getElementById('carouselTrack');
+  const prev = document.getElementById('cPrev');
+  const next = document.getElementById('cNext');
+  const dotsWrap = document.getElementById('cDots');
+  if (!track) return;
+  const slides = track.children;
+  let index = 0;
+
+  for (let i = 0; i < slides.length; i++) {
+    const d = document.createElement('span');
+    if (i === 0) d.classList.add('active');
+    d.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(d);
+  }
+  const dots = dotsWrap.children;
+
+  function goTo(i) {
+    index = (i + slides.length) % slides.length;
+    const slideW = slides[0].getBoundingClientRect().width + 14;
+    track.style.transform = `translateX(${-index * slideW}px)`;
+    for (let j = 0; j < dots.length; j++) dots[j].classList.toggle('active', j === index);
+  }
+  prev.addEventListener('click', () => goTo(index - 1));
+  next.addEventListener('click', () => goTo(index + 1));
+  window.addEventListener('resize', () => goTo(index));
+
+  /* Swipe no mobile */
+  let startX = null;
+  track.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', (e) => {
+    if (startX === null) return;
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) goTo(index + (dx < 0 ? 1 : -1));
+    startX = null;
+  }, { passive: true });
+})();
+
+/* ---------- Modal Live Menu ---------- */
+(function () {
+  const overlay = document.getElementById('menuModal');
+  const frame = document.getElementById('menuFrame');
+  const closeBtn = document.getElementById('modalClose');
+  if (!overlay) return;
+  let loaded = false;
+
+  function open() {
+    if (!loaded) {
+      frame.src = frame.dataset.src;
+      loaded = true;
+      const ld = document.getElementById('modalLoading');
+      frame.addEventListener('load', () => { if (ld) ld.classList.add('hidden'); }, { once: true });
+      setTimeout(() => { if (ld) ld.classList.add('hidden'); }, 8000); /* segurança */
+    }
+    overlay.classList.add('open');
+    if (lenis) lenis.stop();
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    overlay.classList.remove('open');
+    if (lenis) lenis.start();
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('.js-open-menu').forEach((b) => b.addEventListener('click', open));
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+})();
+
+/* ---------- Bolhas no hover dos CTAs (anime.js) ---------- */
+(function () {
+  if (typeof anime === 'undefined' || isMobile) return;
+  let animateFn = null;
+  try { animateFn = anime.animate; } catch (e) {}
+  if (!animateFn) return;
+
+  document.querySelectorAll('.btn').forEach((btn) => {
+    btn.addEventListener('mouseenter', () => {
+      for (let i = 0; i < 5; i++) {
+        const b = document.createElement('span');
+        b.className = 'bubble';
+        b.style.left = (12 + Math.random() * 76) + '%';
+        btn.appendChild(b);
+        try {
+          animateFn(b, {
+            translateY: [0, -(34 + Math.random() * 26)],
+            opacity: [{ to: 0.7, duration: 120 }, { to: 0, duration: 480 }],
+            scale: [0.6, 1.15],
+            duration: 620 + Math.random() * 300,
+            delay: i * 55,
+            easing: 'cubicBezier(0.22, 1, 0.36, 1)',
+            onComplete: () => b.remove()
+          });
+        } catch (e) { b.remove(); }
+      }
+    });
+  });
+})();
+
+/* ---------- Momento Tipográfico: bolhas ambiente + ilustrações com vida própria (anime.js) ---------- */
+(function () {
+  if (typeof anime === 'undefined') return;
+  const { animate } = anime;
+
+  /* Bolhas subindo continuamente no fundo, tamanho/tempo/atraso variados */
+  const bubbleBox = document.getElementById('manifestoBubbles');
+  if (bubbleBox) {
+    const COUNT = isMobile ? 7 : 14;
+    for (let i = 0; i < COUNT; i++) {
+      const b = document.createElement('span');
+      b.className = 'bubble';
+      const size = 3 + Math.random() * 5;
+      b.style.width = size + 'px';
+      b.style.height = size + 'px';
+      b.style.left = (4 + Math.random() * 92) + '%';
+      bubbleBox.appendChild(b);
+      const rise = 260 + Math.random() * 340;
+      const dur = 4200 + Math.random() * 3400;
+      animate(b, {
+        translateY: [0, -rise],
+        translateX: [0, Math.random() * 44 - 22],
+        opacity: [{ to: 0.5, duration: dur * 0.12 }, { to: 0, duration: dur * 0.88 }],
+        duration: dur,
+        delay: Math.random() * 6000,
+        loop: true,
+        easing: 'linear'
+      });
+    }
+  }
+
+})();
+
+/* ---------- Divisor de onda (anime.js — loop idle) ---------- */
+(function () {
+  const svg = document.getElementById('waveSvg');
+  const tent = document.getElementById('waveTentacle');
+  if (!svg) return;
+  if (typeof anime !== 'undefined') {
+    try {
+      const { animate } = anime;
+      /* Onda: desliza continuamente (o path é 2x a largura, padrão repetido) */
+      animate(svg, {
+        translateX: ['0%', '-50%'],
+        duration: 9000,
+        easing: 'linear',
+        loop: true
+      });
+      /* Tentáculo: balanço lento saindo da onda */
+      if (tent) {
+        animate(tent, {
+          rotate: [-4, 5],
+          translateY: [0, -6],
+          duration: 4200,
+          direction: 'alternate',
+          loop: true,
+          easing: 'easeInOutSine'
+        });
+      }
+    } catch (e) {}
+  }
+})();
+
+/* ---------- Criaturas do footer (GSAP — loops próprios) ---------- */
+(function () {
+  if (typeof gsap === 'undefined') return;
+  const whale = document.getElementById('crWhale');
+  const fishBlue = document.getElementById('crFishBlue');
+  const fishTop = document.getElementById('crFishTop');
+  const fishBottom = document.getElementById('crFishBottom');
+  const jelly = document.getElementById('crJelly');
+
+  if (whale) {
+    /* Nasce virada pra esquerda — só precisa viajar nesse sentido, sem espelhar.
+       Sem yoyo: ao terminar, reinicia do lado direito instantaneamente — reaparece do outro lado, em loop. */
+    gsap.fromTo(whale, { x: '110vw' }, { x: '-30vw', duration: 42, ease: 'none', repeat: -1 });
+    gsap.to(whale, { y: 18, duration: 6, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+  }
+  if (fishBlue) {
+    /* Contra a maré: nada pra DIREITA — precisa espelhar (nasce virado pra esquerda) */
+    gsap.fromTo(fishBlue, { x: '-20vw', scaleX: -1 }, { x: '110vw', duration: 26, ease: 'none', repeat: -1, delay: 2 });
+    gsap.to(fishBlue, { y: -10, duration: 4.5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+  }
+  if (fishTop) {
+    /* A favor da maré: pra ESQUERDA — orientação natural, sem espelhar */
+    gsap.fromTo(fishTop, { x: '110vw' }, { x: '-20vw', duration: 30, ease: 'none', repeat: -1, delay: 6 });
+    gsap.to(fishTop, { y: -8, duration: 4, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+  }
+  if (fishBottom) {
+    /* Espelhado no eixo horizontal em relação ao de cima (scaleY), mesma direção */
+    gsap.fromTo(fishBottom, { x: '110vw', scaleY: -1 }, { x: '-20vw', duration: 34, ease: 'none', repeat: -1, delay: 11 });
+    gsap.to(fishBottom, { y: 8, duration: 4.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+  }
+  if (jelly) {
+    gsap.set(jelly, { left: '68%' });
+    gsap.to(jelly, { y: 26, duration: 7, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    gsap.to(jelly, { rotate: 6, duration: 5, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+  }
+})();
+
+/* ---------- Fallback de imagens quebradas ---------- */
+document.querySelectorAll('img').forEach((img) => {
+  img.addEventListener('error', () => {
+    if (img.classList.contains('bg-vec') || img.classList.contains('creature') ||
+        img.closest('.starfish-wrap') || img.id === 'waveTentacle' ||
+        img.classList.contains('card-crab') || img.classList.contains('pre-jelly')) {
+      img.style.display = 'none'; /* vetores ausentes somem em silêncio */
+    } else {
+      img.style.background = 'linear-gradient(135deg, var(--blue-7), var(--blue-2))';
+    }
+  });
+});
+</script>
+</body>
+</html>

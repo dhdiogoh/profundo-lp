@@ -1,0 +1,511 @@
+{
+  "cardapio": [
+    {
+      "file": "IMG_1929.JPG",
+      "slug": "img-1929",
+      "width": 6000,
+      "height": 3368,
+      "aspectRatio": 1.7815,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    },
+    {
+      "file": "IMG_1936.JPG",
+      "slug": "img-1936",
+      "width": 6000,
+      "height": 3368,
+      "aspectRatio": 1.7815,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    },
+    {
+      "file": "IMG_8137.JPG",
+      "slug": "img-8137",
+      "width": 2048,
+      "height": 1365,
+      "aspectRatio": 1.5004,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    },
+    {
+      "file": "IMG_8141.JPG",
+      "slug": "img-8141",
+      "width": 2048,
+      "height": 1365,
+      "aspectRatio": 1.5004,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    },
+    {
+      "file": "IMG_8143.JPG",
+      "slug": "img-8143",
+      "width": 2048,
+      "height": 1365,
+      "aspectRatio": 1.5004,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    },
+    {
+      "file": "IMG_8226.JPG",
+      "slug": "img-8226",
+      "width": 6000,
+      "height": 3368,
+      "aspectRatio": 1.7815,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    },
+    {
+      "file": "IMG_8285.JPG",
+      "slug": "img-8285",
+      "width": 1707,
+      "height": 2560,
+      "aspectRatio": 0.6668,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        1707
+      ]
+    },
+    {
+      "file": "IMG_8531.JPG",
+      "slug": "img-8531",
+      "width": 6000,
+      "height": 3368,
+      "aspectRatio": 1.7815,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    }
+  ],
+  "detalhes": [
+    {
+      "file": "IMG_0749.JPG.jpeg",
+      "slug": "img-0749",
+      "width": 1179,
+      "height": 2096,
+      "aspectRatio": 0.5625,
+      "widths": [
+        480,
+        800,
+        1179
+      ]
+    },
+    {
+      "file": "IMG_8249.JPG",
+      "slug": "img-8249",
+      "width": 2048,
+      "height": 1365,
+      "aspectRatio": 1.5004,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    },
+    {
+      "file": "IMG_8261.JPG",
+      "slug": "img-8261",
+      "width": 1150,
+      "height": 2048,
+      "aspectRatio": 0.5615,
+      "widths": [
+        480,
+        800,
+        1150
+      ]
+    },
+    {
+      "file": "IMG_8263.JPG",
+      "slug": "img-8263",
+      "width": 1150,
+      "height": 2048,
+      "aspectRatio": 0.5615,
+      "widths": [
+        480,
+        800,
+        1150
+      ]
+    },
+    {
+      "file": "IMG_8270.JPG",
+      "slug": "img-8270",
+      "width": 1607,
+      "height": 2410,
+      "aspectRatio": 0.6668,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        1607
+      ]
+    },
+    {
+      "file": "IMG_8271.JPG",
+      "slug": "img-8271",
+      "width": 1150,
+      "height": 2048,
+      "aspectRatio": 0.5615,
+      "widths": [
+        480,
+        800,
+        1150
+      ]
+    },
+    {
+      "file": "IMG_8273.JPG",
+      "slug": "img-8273",
+      "width": 1707,
+      "height": 2560,
+      "aspectRatio": 0.6668,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        1707
+      ]
+    },
+    {
+      "file": "IMG_8274.JPG",
+      "slug": "img-8274",
+      "width": 1150,
+      "height": 2048,
+      "aspectRatio": 0.5615,
+      "widths": [
+        480,
+        800,
+        1150
+      ]
+    },
+    {
+      "file": "IMG_8291.JPG",
+      "slug": "img-8291",
+      "width": 1150,
+      "height": 2048,
+      "aspectRatio": 0.5615,
+      "widths": [
+        480,
+        800,
+        1150
+      ]
+    },
+    {
+      "file": "IMG_9451.JPG",
+      "slug": "img-9451",
+      "width": 6000,
+      "height": 3368,
+      "aspectRatio": 1.7815,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    }
+  ],
+  "drinks": [
+    {
+      "file": "IMG_1341.JPG",
+      "slug": "img-1341",
+      "width": 1150,
+      "height": 2048,
+      "aspectRatio": 0.5615,
+      "widths": [
+        480,
+        800,
+        1150
+      ]
+    },
+    {
+      "file": "IMG_4878.jpg",
+      "slug": "img-4878",
+      "width": 1149,
+      "height": 2048,
+      "aspectRatio": 0.561,
+      "widths": [
+        480,
+        800,
+        1149
+      ]
+    },
+    {
+      "file": "IMG_4888.jpg",
+      "slug": "img-4888",
+      "width": 1149,
+      "height": 2048,
+      "aspectRatio": 0.561,
+      "widths": [
+        480,
+        800,
+        1149
+      ]
+    }
+  ],
+  "fachada-e-local": [
+    {
+      "file": "IMG_8092.JPG",
+      "slug": "img-8092",
+      "width": 1632,
+      "height": 2448,
+      "aspectRatio": 0.6667,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        1632
+      ]
+    },
+    {
+      "file": "IMG_8093.JPG",
+      "slug": "img-8093",
+      "width": 1513,
+      "height": 2269,
+      "aspectRatio": 0.6668,
+      "widths": [
+        480,
+        800,
+        1200,
+        1513
+      ]
+    },
+    {
+      "file": "IMG_8200.JPG",
+      "slug": "img-8200",
+      "width": 1951,
+      "height": 1300,
+      "aspectRatio": 1.5008,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        1951
+      ]
+    },
+    {
+      "file": "IMG_8226 (1).JPG",
+      "slug": "img-8226-1",
+      "width": 2048,
+      "height": 1365,
+      "aspectRatio": 1.5004,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    },
+    {
+      "file": "IMG_8237.JPG",
+      "slug": "img-8237",
+      "width": 1707,
+      "height": 2560,
+      "aspectRatio": 0.6668,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        1707
+      ]
+    },
+    {
+      "file": "IMG_8262.JPG",
+      "slug": "img-8262",
+      "width": 1707,
+      "height": 2560,
+      "aspectRatio": 0.6668,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        1707
+      ]
+    },
+    {
+      "file": "IMG_8263 (1).JPG",
+      "slug": "img-8263-1",
+      "width": 1707,
+      "height": 2560,
+      "aspectRatio": 0.6668,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        1707
+      ]
+    },
+    {
+      "file": "IMG_8264.JPG",
+      "slug": "img-8264",
+      "width": 1707,
+      "height": 2560,
+      "aspectRatio": 0.6668,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        1707
+      ]
+    },
+    {
+      "file": "IMG_8265.JPG",
+      "slug": "img-8265",
+      "width": 1707,
+      "height": 2560,
+      "aspectRatio": 0.6668,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        1707
+      ]
+    },
+    {
+      "file": "IMG_8266.JPG",
+      "slug": "img-8266",
+      "width": 1707,
+      "height": 2560,
+      "aspectRatio": 0.6668,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        1707
+      ]
+    },
+    {
+      "file": "IMG_8546.JPG",
+      "slug": "img-8546",
+      "width": 6000,
+      "height": 3368,
+      "aspectRatio": 1.7815,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    }
+  ],
+  "pessoas": [
+    {
+      "file": "IMG_6383.JPG",
+      "slug": "img-6383",
+      "width": 6000,
+      "height": 3368,
+      "aspectRatio": 1.7815,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    },
+    {
+      "file": "IMG_7473 (1).JPG",
+      "slug": "img-7473-1",
+      "width": 6000,
+      "height": 3368,
+      "aspectRatio": 1.7815,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    },
+    {
+      "file": "IMG_7473.JPG",
+      "slug": "img-7473",
+      "width": 6000,
+      "height": 3368,
+      "aspectRatio": 1.7815,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    },
+    {
+      "file": "IMG_7589.JPG",
+      "slug": "img-7589",
+      "width": 6000,
+      "height": 3368,
+      "aspectRatio": 1.7815,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        2000
+      ]
+    },
+    {
+      "file": "IMG_8185.JPG",
+      "slug": "img-8185",
+      "width": 1707,
+      "height": 2560,
+      "aspectRatio": 0.6668,
+      "widths": [
+        480,
+        800,
+        1200,
+        1600,
+        1707
+      ]
+    }
+  ]
+}

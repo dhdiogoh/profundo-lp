@@ -1,0 +1,13 @@
+node_modules
+dist
+.vercel
+*.log
+.DS_Store
+
+# Fotos originais (matéria-prima de scripts/optimize-images.mjs) — pesadas e
+# nunca servidas pelo site em produção, que só carrega de sections/optimized/
+public/images/sections/cardapio/
+public/images/sections/detalhes/
+public/images/sections/drinks/
+public/images/sections/fachada-e-local/
+public/images/sections/pessoas/

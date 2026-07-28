@@ -15,7 +15,7 @@ export const IMG = {
 };
 
 export const HERO_VIDEO_SRC =
-  'https://r7gebaatjirfgncj.public.blob.vercel-storage.com/Profundo/profundo-video-2.mp4';
+  'https://r7gebaatjirfgncj.public.blob.vercel-storage.com/Profundo/profundo-video-2-faststart.mp4';
 
 export const MENU_URL =
   'https://livemenu.app/menu/69b3280855af81d20db8cf3e?cross_session=done';

@@ -18,23 +18,35 @@ export default function Hero() {
   const { isRevealed, markVideoReady } = useReveal();
   const isMobile = getIsMobile();
 
-  /* ---------- vídeo A: reporta prontidão pro preloader ---------- */
+  /* ---------- vídeo A: reporta prontidão pro preloader ----------
+     Libera no `loadeddata` (primeiro frame decodificável), não no
+     `canplaythrough` (buffer inteiro) — em mobile isso já basta pra
+     iniciar o play visualmente, e o resto do arquivo continua
+     baixando em paralelo. Só depois disso o vídeo B (mesma URL)
+     começa a carregar, pra não disputar banda com o A logo de cara. */
   useEffect(() => {
     const v = videoARef.current;
+    const vB = videoBRef.current;
+    const loadB = () => vB?.load();
+
     if (!v) {
       markVideoReady();
       return;
     }
-    if (v.readyState >= 4) {
+    if (v.readyState >= 2) {
       markVideoReady();
+      loadB();
       return;
     }
-    const done = () => markVideoReady();
-    v.addEventListener('canplaythrough', done, { once: true });
+    const done = () => {
+      markVideoReady();
+      loadB();
+    };
+    v.addEventListener('loadeddata', done, { once: true });
     v.addEventListener('error', done, { once: true });
     v.play().catch(() => {});
     return () => {
-      v.removeEventListener('canplaythrough', done);
+      v.removeEventListener('loadeddata', done);
       v.removeEventListener('error', done);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -231,7 +243,7 @@ export default function Hero() {
           ref={videoBRef}
           muted
           playsInline
-          preload="auto"
+          preload="none"
           crossOrigin="anonymous"
           style={{ opacity: 0, willChange: 'opacity' }}
         >
